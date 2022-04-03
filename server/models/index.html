@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        <input type="email" placeholder="email" id="email">
+        <input type="password" placeholder="senha" id="senha" >
+        <button id="login" onclick="login(Event)">logar</button>
+    </h1>
+    
+     <script>
+         function login(){
+
+             const url = 'http://localhost:8081/api/v1/login'
+
+             const email = document.getElementById('email').value
+             const senha =  document.getElementById('senha').value
+
+             const data = {email,senha}
+
+             const config ={
+                 method:'POST',
+                 body: JSON.stringify(data),
+                 headers: {
+                    'Accept':'application/json',
+                    'Content-Type':'application/json'
+                 }
+             }
+             
+             fetch(url, config).then(response =>{
+                 if(response.ok){
+                     onSuccess(response.text())
+                     document.location.href = 'http://localhost:8081/api/v1/users'
+                 }
+                 else{
+                    onError(response.text())
+                 }
+             })
+         }
+
+
+        function onSuccess(response) {
+            response.then(body =>{
+                let json = JSON.parse(body)
+                let token = localStorage.setItem('_token',json._Token)
+            }) 
+        }
+
+        function onError(error) {
+            error.then(body =>{
+                alert(body)
+            }) 
+        }
+     </script>
+</body>
+</html>
